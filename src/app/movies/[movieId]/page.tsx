@@ -42,8 +42,12 @@ export default function MoviePage({ params }: MoviePageProps) {
       const response = await api.get(`/movies/${movieId}`);
       setMovie(response.data);
       setThreads(response.data.threads);
-    } catch (err: any) {
-      console.error('映画取得時にエラーが発生しました', err);
+    } catch (err: unknown) {
+      if (typeof err === 'object' && err !== null && 'response' in err) {
+        console.error('映画取得時にエラーが発生しました', (err as any).response?.data?.error || err);
+      } else {
+        console.error('映画取得時にエラーが発生しました', err);
+      }
     }
   }
 
@@ -62,9 +66,14 @@ export default function MoviePage({ params }: MoviePageProps) {
       setThreads([response.data, ...threads]);
       setCreateThreadMessage('スレッドが作成されました');
       resetThreadForm();
-    } catch (err: any) {
-      console.error('スレッド作成時にエラーが発生しました', err);
-      setCreateThreadError(err.response?.data?.error || 'スレッドの作成に失敗しました');
+    } catch (err: unknown) {
+      if (typeof err === 'object' && err !== null && 'response' in err) {
+        console.error('スレッド作成時にエラーが発生しました', (err as any).response?.data?.error || err);
+        setCreateThreadError((err as any).response?.data?.error || 'スレッドの作成に失敗しました');
+      } else {
+        console.error('スレッド作成時にエラーが発生しました', err);
+        setCreateThreadError('スレッドの作成に失敗しました');
+      }
     }
   }
 

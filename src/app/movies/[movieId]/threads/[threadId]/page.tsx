@@ -41,13 +41,21 @@ export default function ThreadPage({ params } : ThreadPageProps) {
 
   const [isCommentPopupOpen, setIsCommentPopupOpen] = useState<boolean>(false);
 
+  console.log(fetchCommentsError, createCommentError, fetchRepliesError, createReplyError);
+  setReplyToId(null);
+
   const fetchThread = async () => {
     try {
       const response = await api.get(`/threads/${threadId}`);
       setThread(response.data);
-    } catch (err: any) {
-      console.error(err.response?.data?.error || 'スレッド取得時にエラーが発生しました', err);
-      setFetchThreadError(err.response?.data?.error || 'スレッド取得時にエラーが発生しました');
+    } catch (err: unknown) {
+      if (typeof err === 'object' && err !== null && 'response' in err) {
+        console.error((err as any).response?.data?.error || 'スレッド取得時にエラーが発生しました', err);
+        setFetchThreadError((err as any).response?.data?.error || 'スレッド取得時にエラーが発生しました');
+      } else {
+        console.error('スレッド取得時にエラーが発生しました', err);
+        setFetchThreadError('スレッド取得時にエラーが発生しました');
+      }
     }
   }
 
@@ -56,9 +64,14 @@ export default function ThreadPage({ params } : ThreadPageProps) {
       const response = await api.get(`/threads/${threadId}/comments`);
       setComments(response.data);
       return response.data;
-    } catch (err: any) {
-      console.error(err.response?.data?.error || 'コメント取得時にエラーが発生しました', err);
-      setFetchCommentsError(err.response?.data?.error || 'コメント取得時にエラーが発生しました');
+    } catch (err: unknown) {
+      if (typeof err === 'object' && err !== null && 'response' in err) {
+        console.error((err as any).response?.data?.error || 'コメント取得時にエラーが発生しました', err);
+        setFetchCommentsError((err as any).response?.data?.error || 'コメント取得時にエラーが発生しました');
+      } else {
+        console.error('コメント取得時にエラーが発生しました', err);
+        setFetchCommentsError('コメント取得時にエラーが発生しました');
+      }
       return [];
     }
   }
@@ -67,9 +80,14 @@ export default function ThreadPage({ params } : ThreadPageProps) {
     try {
       const response = await api.get(`/comments/${commentId}/replies`);
       setReplies(response.data);
-    } catch (err: any) {
-      console.error(err.response?.data?.error || '返信取得時にエラーが発生しました', err);
-      setFetchRepliesError(err.response?.data?.error || '返信取得時にエラーが発生しました');
+    } catch (err: unknown) {
+      if (typeof err === 'object' && err !== null && 'response' in err) {
+        console.error((err as any).response?.data?.error || '返信取得時にエラーが発生しました', err);
+        setFetchRepliesError((err as any).response?.data?.error || '返信取得時にエラーが発生しました');
+      } else {
+        console.error('返信取得時にエラーが発生しました', err);
+        setFetchRepliesError('返信取得時にエラーが発生しました');
+      }
     }
   }
 
@@ -84,9 +102,14 @@ export default function ThreadPage({ params } : ThreadPageProps) {
         content: comment
       });
       setComments([response.data, ...comments]);
-    } catch (err: any) {
-      console.error(err.response?.data?.error || 'コメント投稿時にエラーが発生しました', err);
-      setCreateCommentError(err.response?.data?.error || 'コメント投稿時にエラーが発生しました');
+    } catch (err: unknown) {
+      if (typeof err === 'object' && err !== null && 'response' in err) {
+        console.error((err as any).response?.data?.error || 'コメント投稿時にエラーが発生しました', err);
+        setCreateCommentError((err as any).response?.data?.error || 'コメント投稿時にエラーが発生しました');
+      } else {
+        console.error('コメント投稿時にエラーが発生しました', err);
+        setCreateCommentError('コメント投稿時にエラーが発生しました');
+      }
     }
   }
 
@@ -98,9 +121,14 @@ export default function ThreadPage({ params } : ThreadPageProps) {
         replyToId: replyToId || undefined
       });
       setReplies([response.data, ...replies]);
-    } catch (err: any) {
-      console.error(err.response?.data?.error || '返信投稿時にエラーが発生しました', err);
-      setCreateReplyError(err.response?.data?.error || '返信投稿時にエラーが発生しました');
+    } catch (err: unknown) {
+      if (typeof err === 'object' && err !== null && 'response' in err) {
+        console.error((err as any).response?.data?.error || '返信投稿時にエラーが発生しました', err);
+        setCreateReplyError((err as any).response?.data?.error || '返信投稿時にエラーが発生しました');
+      } else {
+        console.error('返信投稿時にエラーが発生しました', err);
+        setCreateReplyError('返信投稿時にエラーが発生しました');
+      }
     }
   }
 
@@ -112,8 +140,12 @@ export default function ThreadPage({ params } : ThreadPageProps) {
       } else {
         setComments(comments.filter((comment) => comment.id !== commentId));
       }
-    } catch (err: any) {
-      console.error(err.response?.data?.error || 'コメントの削除に失敗しました', err);
+    } catch (err: unknown) {
+      if (typeof err === 'object' && err !== null && 'response' in err) {
+        console.error((err as any).response?.data?.error || 'コメントの削除に失敗しました', err);
+      } else {
+        console.error('コメントの削除に失敗しました', err);
+      }
     }
   };
 

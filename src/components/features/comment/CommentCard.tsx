@@ -33,8 +33,12 @@ export default function CommentCard({
       api.put(`/comments/${commentData.id}/likes`, {
         increment: isLike
       });
-    } catch (err: any) {
-      console.error(err.response?.data?.error || 'コメントのいいねに失敗しました', err);
+    } catch (err: unknown) {
+      if (typeof err === 'object' && err !== null && 'response' in err) {
+        console.error((err as any).response?.data?.error || 'コメントのいいねに失敗しました', err);
+      } else {
+        console.error('コメントのいいねに失敗しました', err);
+      }
     }
   };
 

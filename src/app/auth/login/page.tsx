@@ -28,8 +28,12 @@ export default function LoginForm() {
     try {
       await login(identifier, password);
       router.replace('/')
-    } catch (err: any) {
-      setLoginError(err.response?.data?.error);
+    } catch (err: unknown) {
+      if (typeof err === 'object' && err !== null && 'response' in err) {
+        setLoginError((err as any).response?.data?.error);
+      } else {
+        setLoginError('エラーが発生しました');
+      }
     }
   };
 

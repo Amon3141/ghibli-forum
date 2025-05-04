@@ -45,10 +45,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setLoading(true);
     try {
       const response = await api.get('/users/me');
-      setUser(response.data.user as UserInfo);
-    } catch (err: any) {
+      setUser(response.data.user);
+    } catch (err: unknown) {
       setUser(null);
-      console.log(err.response?.data?.error);
+      if (typeof err === 'object' && err !== null && 'response' in err) {
+        console.log((err as any).response?.data?.error);
+      } else {
+        console.log('エラーが発生しました');
+      }
       throw err;
     } finally {
       setLoading(false);
@@ -63,9 +67,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         password
       });
       setUser(response.data.user);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setUser(null);
-      console.log(err.response?.data?.error);
+      if (typeof err === 'object' && err !== null && 'response' in err) {
+        console.log((err as any).response?.data?.error);
+      } else {
+        console.log('エラーが発生しました');
+      }
       throw err;
     } finally {
       setLoading(false);
@@ -79,9 +87,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         userId, username, password, email
       });
       setUser(response.data.user);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setUser(null);
-      console.log(err.response?.data?.error);
+      if (typeof err === 'object' && err !== null && 'response' in err) {
+        console.log((err as any).response?.data?.error);
+      } else {
+        console.log('エラーが発生しました');
+      }
       throw err;
     } finally {
       setLoading(false);

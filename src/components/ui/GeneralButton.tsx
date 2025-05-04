@@ -1,8 +1,10 @@
+import React from 'react';
+
 export default function GeneralButton({
   onClick: clickHandler, children, className = "", ...rest
 }: {
-  onClick?: () => void, children: React.ReactNode, className?: string, [key: string]: any
-}) {
+  onClick?: () => void, children: React.ReactNode, className?: string
+} & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button className={`
       py-1.5 px-4 box-border rounded-md

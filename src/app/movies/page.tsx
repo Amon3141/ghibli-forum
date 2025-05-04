@@ -28,9 +28,14 @@ export default function Movies() {
     try {
       const response = await api.get<Movie[]>('/movies');
       setMovies(response.data);
-    } catch (err: any) {
-      console.error('Failed to fetch movies:', err);
-      setFetchMoviesError(err.response?.data?.error || '映画取得時にエラーが発生しました');
+    } catch (err: unknown) {
+      if (typeof err === 'object' && err !== null && 'response' in err) {
+        console.error('Failed to fetch movies:', (err as any).response?.data?.error || err);
+        setFetchMoviesError((err as any).response?.data?.error || '映画取得時にエラーが発生しました');
+      } else {
+        console.error('Failed to fetch movies:', err);
+        setFetchMoviesError('映画取得時にエラーが発生しました');
+      }
     }
   };
 
@@ -38,9 +43,14 @@ export default function Movies() {
     try {
       const response = await api.post('/movies', newMovie);
       setMovies([...movies, response.data.movie]);
-    } catch (err: any) {
-      console.error('Failed to create movie:', err);
-      setCreateMovieError(err.response?.data?.error || '映画登録時にエラーが発生しました');
+    } catch (err: unknown) {
+      if (typeof err === 'object' && err !== null && 'response' in err) {
+        console.error('Failed to create movie:', (err as any).response?.data?.error || err);
+        setCreateMovieError((err as any).response?.data?.error || '映画登録時にエラーが発生しました');
+      } else {
+        console.error('Failed to create movie:', err);
+        setCreateMovieError('映画登録時にエラーが発生しました');
+      }
     }
   };
 
@@ -101,8 +111,12 @@ const initializeMovies = async () => {
     }
     
     setMovies([...movies, ...newMovies]);
-  } catch (err: any) {
-    console.error('Failed to initialize movies:', err);
+  } catch (err: unknown) {
+    if (typeof err === 'object' && err !== null && 'response' in err) {
+      console.error('Failed to initialize movies:', (err as any).response?.data?.error || err);
+    } else {
+      console.error('Failed to initialize movies:', err);
+    }
   }
 };
 

@@ -32,8 +32,12 @@ export default function RegisterForm() {
     try {
       await register(userId, username, password, email);
       router.push('/auth/login')
-    } catch (err: any) {
-      setRegisterError(err.response?.data?.error);
+    } catch (err: unknown) {
+      if (typeof err === 'object' && err !== null && 'response' in err) {
+        setRegisterError((err as any).response?.data?.error);
+      } else {
+        setRegisterError('エラーが発生しました');
+      }
     }
   };
 
